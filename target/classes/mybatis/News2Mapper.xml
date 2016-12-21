@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="tech.lese.webdemo.repository.mybatis.news.NewsMyBatisDao2">
+	<select id="getNewsList" parameterType="map" resultType="map">
+		SELECT * FROM site_news order by update_date limit #{pageNum},#{pageSize}
+	</select>	
+	
+	<select id="getNewsById" parameterType="map" resultType="map">
+		SELECT * FROM site_news WHERE id=#{newsId}
+	</select>
+	
+	<select id="getNewsCount"  resultType="map">
+		SELECT COUNT(*) counts FROM site_news
+	</select>
+	
+	<insert id="saveNews" parameterType="map">
+		INSERT INTO site_news (news_title,second_title,news_content,news_author,create_date,update_date)
+		VALUES(#{newsTitle},#{secondTitle},#{newsContent},#{newsAuthor},NOW(),NOW());
+	</insert>	
+</mapper> 
