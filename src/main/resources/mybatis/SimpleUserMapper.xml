@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="tech.lese.webdemo.repository.mybatis.user.SimpleUserMybatisDao">
+	<!--SimpleUser 对应的类型为：tech.lese.webdemo.entity.SimpleUser
+		因为在SqlSessionFactoryBean中配置了typeAliasesPackage。所以可以不用完整类路径。
+		resultType中SimpleUser中的属性字段需要与数据库字段完全匹配才会自动绑定赋值，否则为null。
+		使用或者resultMap,手动一一对应字段。
+	  -->
+	<!-- resultMap示例：
+	  <resultMap type="SimpleUser" id="SimpleUserResMap">
+	  	<result property="id" column="id" javaType="Long" jdbcType="bigint"/>
+	  	<result property="addrTest" column="addr_test" javaType="String" jdbcType="varchar"/>
+	  </resultMap>
+	  <select id="getAllUsers"  resultMap="SimpleUserResMap" >
+		SELECT * FROM s_user
+	  </select> -->
+	<select id="getAllUsers"  resultType="SimpleUser" >
+		SELECT * FROM s_user
+	</select>	
+</mapper> 
