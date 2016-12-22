@@ -64,6 +64,7 @@
 		<!-- 显式指定Mapper文件位置 -->
 		<property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
 	</bean>
+	<!-- 多数据源配置1 -->
 	<bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource2" />
 		<!-- 自动扫描entity目录,省掉Configuration.xml里的手工配置 -->
@@ -79,7 +80,7 @@
 		<property name="annotationClass" value="tech.lese.webdemo.repository.MyBatisRepository"/>
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
 	</bean>
-	<!-- 多数据源配置 -->
+	<!-- 多数据源配置2 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<!-- 在不使用注解标注DAO类时<annotationClass>，扫描的basePackage需要不同包路径，这样MapperScanner才能区分 -->
 		<property name="basePackage" value="tech.lese.webdemo" />
@@ -88,7 +89,35 @@
 		<!-- 告诉MapperScanner,使用哪个sqlSessionFactory。只有一个数据源时，这个属性可不配置 -->
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory2"></property>
 	</bean>
+	<!-- 注意，单个数据源时没有必要去指定SqlSessionFactory或SqlSessionTemplate，
+	因为MapperScannerConfigurer将会创建MapperFactoryBean，之后自动装配。
+	但是，如果使用了多个DataSource(因此，也是多个的SqlSessionFactory),
+	那么自动装配会失效。这种情况下，使用sqlSessionFactory或sqlSessionTemplate属性来设置正确的工厂/模板。
 	
+	MapperScannerConfigurer支持过滤由指定的创建接口或注解创建映射器。
+	annotationClass属性指定了要寻找的注解名称。markerInterface属性指定了要寻找的父接口。
+	如果两者都被指定了，加入到接口中的映射器会匹配两种标准。默认情况下，这两个属性都是null,所以在基包中给定的所有接口可以作为映射器加载。
+	
+	映射器接口文件：即DAO接口，映射xml文件，需要与xml文件中namespace路径匹配。
+	
+	在不使用MapperScannerConfigurer，可直接配置sqlSessionTemplate，并在Dao中直接引用，且xml配置文件中的namespace不需要与Dao路径匹配。
+	1.配置：
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+	2.XML文件：
+	<mapper namespace="NewsMapper">
+	<insert id="save" parameterType="params"><insert>
+	3.DAO：
+	@Resource(name = "sqlSessionTemplate")
+	private SqlSessionTemplate sqlSessionTemplate;
+	public Object save(String str, Object params) throws Exception {
+		return sqlSessionTemplate.insert(str, params);
+	}
+	4.service：
+	dao.save("NewsMapper.save", params);
+	
+	 -->
 	<!-- production环境 -->
  	<beans profile="production">
  		<context:property-placeholder ignore-unresolvable="true"
