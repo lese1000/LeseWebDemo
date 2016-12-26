@@ -7,6 +7,7 @@
 		因为在SqlSessionFactoryBean中配置了typeAliasesPackage。所以可以不用完整类路径。
 		resultType中SimpleUser中的属性字段需要与数据库字段完全匹配才会自动绑定赋值，否则为null。
 		使用或者resultMap,手动一一对应字段。
+		特别的，resultType不区分大小写，即simpleuser也可以。
 	  -->
 	<!-- resultMap示例：
 	  <resultMap type="SimpleUser" id="SimpleUserResMap">
@@ -16,7 +17,7 @@
 	  <select id="getAllUsers"  resultMap="SimpleUserResMap" >
 		SELECT * FROM s_user
 	  </select> -->
-	<select id="getAllUsers"  resultType="SimpleUser" >
+	<select id="getAllUsers"  resultType="simpleuser" >
 		SELECT * FROM s_user
 	</select>	
 </mapper> 
