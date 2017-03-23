@@ -59,7 +59,7 @@
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<!-- 自动扫描entity目录,省掉Configuration.xml里的手工配置，即resultType中的类不需要完整类路径，只需要类名，且不区分大小写 -->
+		<!-- 自动扫描entity目录,省掉Configuration.xml里的手工配置，即parameterType,resultType中的类不需要完整类路径，只需要类名，且不区分大小写 -->
 		<property name="typeAliasesPackage" value="tech.lese.webdemo.entity" />
 		<!-- 显式指定Mapper文件位置 -->
 		<property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
