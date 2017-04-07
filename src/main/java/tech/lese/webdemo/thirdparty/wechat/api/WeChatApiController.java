@@ -1,5 +1,6 @@
 package tech.lese.webdemo.thirdparty.wechat.api;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,10 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import tech.lese.webdemo.thirdparty.wechat.util.WeixinUtil;
 import tech.lese.webdemo.utils.AppConfigurator;
 import tech.lese.webdemo.utils.CookieUtil;
+import tech.lese.webdemo.utils.JsonUtil;
 
 @Controller(value="/wechat")
 public class WeChatApiController {
@@ -73,4 +76,32 @@ public class WeChatApiController {
             //response.sendRedirect(Const.WEB_URL + "/m/public/error.html");
         }
     }
+	
+	
+	/**
+	    * 配合 wxJssdk.js使用
+	    * @param request
+	    * @param response
+	    * @return
+	    * @throws Exception
+	    */
+	    @RequestMapping(value = "/getSignature")
+	    @ResponseBody
+	    public String  getSignature( HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    	Map<String, Object> result=new HashMap<String, Object>();
+	    	String signature="";
+	    	String noncestr = request.getParameter("NONCESTR");
+	        String url = request.getParameter("URL");
+	        String timestame = request.getParameter("TIMESTAME");
+	        try {
+	            signature= WeixinUtil.getWxSignature(url, timestame, noncestr);
+	            result.put("msg", "success");
+	        } catch (Exception e) {
+	        	 result.put("msg", "error:"+e.getMessage());
+	            e.printStackTrace();
+	        }
+	        result.put("signature", signature);
+	        result.put("appid", AppConfigurator.getProperty("APPID"));
+	        return JsonUtil.toJsonObj(result).toString();
+	    }
 }
