@@ -51,7 +51,6 @@ public class WeChatApiController {
             String appid = AppConfigurator.getProperty("APPID");
             String appSecret=AppConfigurator.getProperty("APPSECRET");
             if (!StringUtils.isEmpty(code)) {
-            	 String backUrl="";
             	 Map<String, String> rmap=WeixinUtil.getWxOpenIDandAccess_token(code, appid, appSecret);
 	                String openid=rmap.get("openid");
 	                //1）openid保存在cookie中
@@ -62,12 +61,12 @@ public class WeChatApiController {
 	                }
 	                //2)openid拼接在访问路径中
 	                if(url.contains("?")){
-	                	backUrl=url+"&openid="+openid;
+	                	url=url+"&openid="+openid;
 	                }else{
-	                	backUrl=url+"?openid="+openid;
+	                	url=url+"?openid="+openid;
 	                }
 	                
-	                response.sendRedirect(backUrl);
+	                response.sendRedirect(url);
 	        }else{
 	        	//跳转错误页面，提示未获取到code值
 	        }
