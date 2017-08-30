@@ -171,6 +171,7 @@ public class UploadFile4Spring {
 	
 	
 	
+	
 	//拷贝文件到指定目录
 	private static void copyFile(InputStream in, String saveFileRealPath, String newFileName)
 			throws IOException {
