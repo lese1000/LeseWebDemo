@@ -4,20 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-/**
- * 20170830
- * @author tech.lese 
- */
+
 public class UploadFile4Spring {
 	
 	public enum FileType{
@@ -134,9 +135,38 @@ public class UploadFile4Spring {
 		return fullFileName;
 	}
 	
-	//默认的上传文件方法【默认保存外部】
+	/**
+	 * 默认的上传文件方法【默认保存外部】
+	 * @param file uploadFile(@RequestParam("file")MultipartFile file)
+	 * @param fileType
+	 * @return
+	 */
 	public static String uploadFileDefault(MultipartFile file,FileType fileType){
 		return uploadFileToRes(file,fileType,SavePosition.Outer);
+	}
+	
+	/**
+	 *  支持上传多个文件
+	 * @param request uploadFile(MultipartHttpServletRequest request)
+	 * @param fileType
+	 * @return 返回文件名列表，为空，则说明请求中无文件
+	 */
+	public static List<String> uploadFileDefault(MultipartHttpServletRequest request,FileType fileType){
+			List<String> fullFileNameList = new ArrayList<String>();
+			String fullFileName;
+			MultiValueMap<String, MultipartFile> fileMap =  request.getMultiFileMap();
+			
+			if(null!=fileMap&&!fileMap.isEmpty()){
+				for(List<MultipartFile> fileList: fileMap.values()){
+					for(MultipartFile file:fileList){
+						if (null != file && !file.isEmpty()) {
+							fullFileName = uploadFileDefault(file,fileType);//执行上传
+							fullFileNameList.add(fullFileName);
+						}
+					}
+				}
+			}
+			return fullFileNameList;
 	}
 	
 	
