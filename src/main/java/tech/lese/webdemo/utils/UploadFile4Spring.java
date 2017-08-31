@@ -129,6 +129,7 @@ public class UploadFile4Spring {
 		
 		try {
 			copyFile(file.getInputStream(),saveFileRealPath,newFileName);
+			//file.transferTo(new File(saveFileRealPath,newFileName));同上一步，执行上传。
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -147,6 +148,11 @@ public class UploadFile4Spring {
 	
 	/**
 	 *  支持上传多个文件
+	 *  注意：如果使用了shiro，在控制器中的方法获取不到 MultipartHttpServletRequest。
+	 *  因为shiro会对request进行转换，得到的是 ShiroHttpServletRequest，因此上传时用该方法不适用。
+	 *  
+	 *  在xml中配置了multipartResolver，HttpServletRequest会获取不到上传的文件，因为multipartResolver 对上传的文件已经做了解析
+	 *  
 	 * @param request uploadFile(MultipartHttpServletRequest request)
 	 * @param fileType
 	 * @return 返回文件名列表，为空，则说明请求中无文件
